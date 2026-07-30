@@ -53,7 +53,7 @@ export default function InterviewCoach() {
   };
 
   return (
-    <div className="page">
+    <div className="app">
       <button 
         className="btn-new"
         onClick={onReset}
@@ -62,30 +62,32 @@ export default function InterviewCoach() {
         <span style={{ fontSize: '20px', fontWeight: 'bold' }}>+</span> New Interview
       </button>
 
-      <header className="hero">
-        <h1 className="heroTitle" style={{ color: "var(--blue)" }}>Generate Interview Questions</h1>
-        <p className="heroSub">
-          Upload your resume to get tailored interview questions based on your profile
-        </p>
-      </header>
+      <main className="page">
+        <header className="hero">
+          <h1 className="heroTitle" style={{ color: "var(--blue)" }}>Interview Question Prediction </h1>
+          <p className="heroSub">
+            Upload your resume to get tailored interview questions based on your profile
+          </p>
+        </header>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf"
-        hidden
-        onChange={onFileChange}
-      />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf"
+          hidden
+          onChange={onFileChange}
+        />
 
-      <UploadCard
-        file={file}
-        onPickFile={onPickFile}
-        onGenerate={onGenerate}
-        loading={loading}
-        error={error}
-      />
+        <UploadCard
+          file={file}
+          onPickFile={onPickFile}
+          onGenerate={onGenerate}
+          loading={loading}
+          error={error}
+        />
 
-      <GeneratedQuestions results={results} file={file} />
+        <GeneratedQuestions results={results} file={file} />
+      </main>
     </div>
   );
 }

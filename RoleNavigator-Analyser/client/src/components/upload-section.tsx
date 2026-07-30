@@ -94,12 +94,11 @@ export function UploadSection({ onAnalysisComplete }: UploadSectionProps) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">
-          Get Your Resume Score in Seconds
+        <h2 className="heroTitle mb-4">
+          Resume Analyzer
         </h2>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          Upload your resume and receive an instant score out of 100, plus actionable 
-          feedback to help you land your dream job.
+        <p className="heroSub">
+          Identify missing skills, optimize keywords, and improve resume performance.
         </p>
       </div>
 

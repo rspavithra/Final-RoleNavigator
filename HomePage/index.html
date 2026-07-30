@@ -22,7 +22,7 @@
           <a href="#">Modules</a>
           <ul class="dropdown-menu">
             <li><a href="http://localhost:5001/" onclick="goToAnalyzer(event)">Resume Analyzer</a></li>
-            <li><a href="http://localhost:5004/" onclick="goToBuilder(event)">Resume Builder</a></li>
+            <li><a href="http://localhost:5004/" onclick="goToBuilder(event)">Resume Optimizer</a></li>
             <li><a href="http://localhost:5002/" onclick="goToInterview(event)">Interview Q Prediction</a></li>
           </ul>
         </li>
@@ -38,9 +38,7 @@
       <ul class="profile-dropdown" id="profileDropdown">
         <li id="profileNameItem" style="padding:10px 14px 2px;font-size:13px;font-weight:700;color:var(--slate);pointer-events:none"></li>
         <div class="p-divider"></div>
-        <li><a href="#modules">📊 &nbsp;My Dashboard</a></li>
-        <div class="p-divider"></div>
-        <li class="logout"><a href="#" id="logoutBtn">🚪 &nbsp;Log Out</a></li>
+        <li class="logout"><a href="#" id="logoutBtn"> &nbsp;Log Out</a></li>
       </ul>
     </div>
   </div>
@@ -49,9 +47,9 @@
   <div class="hero">
     <div class="hero-left">
       <h1>AI-Powered<br><span class="grad">Career Optimization</span><br>Platform</h1>
-      <p class="hero-sub">Boost your ATS compatibility, tailor your resume to any job description, and walk into every interview fully prepared — powered by advanced AI.</p>
+      <p class="hero-sub">Boost your ATS compatibility, tailor your resume to any job description, and walk into every interview fully prepared - powered by advanced AI.</p>
       <div class="hero-actions">
-        <a href="#" class="btn-primary">Get Started <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+        
         <a href="#modules" class="btn-outline">Explore Modules</a>
       </div>
     </div>
@@ -99,11 +97,11 @@
       </div>
       <div class="module-card reveal" style="transition-delay:.1s">
         <div class="module-icon-wrap">🛠️</div>
-        <div class="module-title">Resume Builder</div>
+        <div class="module-title">Resume Optimizer</div>
         <ul class="module-features">
           <li>Create job-specific resumes using AI and LaTeX</li>
-          <li>Automatically tailors summary and experience bullets</li>
-          <li>Optimizes skill ranking for target job descriptions</li>
+          <li>Restructure and optimize resumes based on target roles</li>
+          <li>Enhance ATS compatibility using intelligent keyword optimization</li>
           <li>Real-time LaTeX-to-PDF generation</li>
           <li>Review and edit AI-generated content before export</li>
         </ul>
@@ -111,13 +109,12 @@
       </div>
       <div class="module-card reveal" style="transition-delay:.2s">
         <div class="module-icon-wrap">💬</div>
-        <div class="module-title">Interview Q Prediction</div>
+        <div class="module-title">Interview Question Prediction</div>
         <ul class="module-features">
-          <li>Generates role-specific questions using RAG technology</li>
-          <li>Extracts key technical areas from the job description</li>
-          <li>Covers technical, HR, and scenario-based questions</li>
-          <li>Includes coding challenges where applicable</li>
-          <li>Optionally provides AI-generated sample answers</li>
+          <li>Generates resume based questions using RAG technology</li>
+          <li>Extracts key technical areas from the resume</li>
+          <li>Covers all important level questions like project,experience section etc</li>
+          <li>Improves confidence in preparation for cracking interviews</li>
         </ul>
         <a href="http://localhost:5002/" class="btn-try" style="text-decoration:none" onclick="goToInterview(event)">Try Now →</a>
       </div>
@@ -150,18 +147,17 @@
       <div class="feature-card reveal" style="transition-delay:.18s">
         <div class="feat-icon">⚡</div>
         <div class="feat-title">Instant Results</div>
-        <p class="feat-desc">Full ATS analysis, keyword report, and optimization suggestions delivered in under 10 seconds. No waiting, no queues.</p>
+        <p class="feat-desc">Full ATS analysis, keyword report, and optimization suggestions delivered in seconds.</p>
       </div>
       <div class="feature-card reveal" style="transition-delay:.24s">
         <div class="feat-icon">🔒</div>
-        <div class="feat-title">Secure & Private</div>
-        <p class="feat-desc">End-to-end encryption with zero data retention. Your resume is processed securely and never stored or shared with third parties.</p>
+        <div class="feat-title">Smart Resume Formatting</div>
+        <p class="feat-desc">Professionally structured resumes powered by Latex-based formatting for clean and ATS-friendly output.</p>
       </div>
       <div class="feature-card reveal" style="transition-delay:.30s">
         <div class="feat-icon">📈</div>
-        <div class="feat-title">Performance Dashboard</div>
-        <p class="feat-desc">Track all resume versions, ATS scores, and improvement history in one clean view — measure your progress over time.</p>
-      </div>
+        <div class="feat-title">Complete Career Suite</div>
+        <p class="feat-desc">An all-in-one platform for resume analysis,ATS optimization,keyword matching,job tailoring, and performance tracking.</p>
     </div>
   </div>
 </section>

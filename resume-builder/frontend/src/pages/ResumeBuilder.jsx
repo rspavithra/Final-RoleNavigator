@@ -165,7 +165,7 @@ export default function ResumeBuilder() {
 
   async function generateResume({ force, overrideData }) {
     setExtractError("");
-    
+
     // 1. Direct generation if forced
     if (force) {
       setGenerating(true);
@@ -190,10 +190,10 @@ export default function ResumeBuilder() {
         }
 
         // Add a timestamp cache-buster so the browser actually reloads the new PDF
-        const cacheBustedUrl = url.includes("?") 
-            ? `${url}&t=${Date.now()}` 
-            : `${url}?t=${Date.now()}`;
-            
+        const cacheBustedUrl = url.includes("?")
+          ? `${url}&t=${Date.now()}`
+          : `${url}?t=${Date.now()}`;
+
         setPdfUrl(cacheBustedUrl);
       } catch (e) {
         setExtractError("Resume generation failed. Check backend is running.");
@@ -243,7 +243,7 @@ export default function ResumeBuilder() {
 
   return (
     <div className="app">
-      <button 
+      <button
         className="btn-new"
         onClick={resetAll}
         title="Start fresh with a new resume"
@@ -253,8 +253,8 @@ export default function ResumeBuilder() {
 
       <main className="container">
         <div className="hero">
-          <h1>Career Catalyst</h1>
-          <p>Optimize your resume with AI. Align your skills with any job description in seconds.</p>
+          <h1>Resume Optimizer</h1>
+          <p>Create professional, job-specific resumes optimized for modern hiring systems.</p>
         </div>
 
         {/* Upload */}
@@ -346,13 +346,12 @@ export default function ResumeBuilder() {
           }}
           onGoAnalyzer={() => {
             setShowLowMatch(false);
-            const el = document.getElementById("resume-analyzer");
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            window.location.href = "http://localhost:5001/";
           }}
         />
       </main>
 
-      <footer className="footer">Career Catalyst (AI Resume Alignment) Ready</footer>
+      <footer className="footer">Resume Optimizer (AI Resume Alignment) Ready</footer>
     </div>
   );
 }

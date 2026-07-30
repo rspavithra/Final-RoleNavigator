@@ -1,24 +1,42 @@
 import json
 import os
 from llm.groq_client import GroqClient
-from rag.retrieve import retrieve
+
+
+def extract_json_object(text):
+    text = text.strip()
+    if not text:
+        return None
+
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        decoder = json.JSONDecoder()
+        idx = 0
+        while idx < len(text):
+            if text[idx] in " \t\r\n":
+                idx += 1
+                continue
+            try:
+                obj, end = decoder.raw_decode(text[idx:])
+                return obj
+            except json.JSONDecodeError:
+                idx += 1
+        return None
+
 
 def generate_interview_questions(resume_text):
     """
-    Generates interview questions based on the resume and RAG context using Groq LLM.
+    Generates interview questions based on the resume and the provided resume text.
     """
-    # 1. Retrieve relevant interview patterns/questions from dataset based on resume
-    rag_context = retrieve(resume_text, k=6)
-    context_text = "\n\n".join([r['text'] for r in rag_context])
-
-    # 2. Setup prompt and LLM call
     client = GroqClient()
 
     system_prompt = """
     You are an expert technical interviewer. You generate high-quality, resume-specific interview questions.
-    
+
     RULES:
-    - ALWAYS return a valid JSON object.
+    - ALWAYS return only a valid JSON object and nothing else.
+    - Do not include markdown, code fences, or explanatory text.
     - Questions MUST be based STRICTLY on the provided resume.
     - If a technology is mentioned, ask questions about its concepts and application.
     - If projects/experience are mentioned, ask about implementation details, challenges, and results.
@@ -33,9 +51,6 @@ def generate_interview_questions(resume_text):
     """
 
     user_prompt = f"""
-    CONTEXT FROM INTERVIEW DATASET (Use for style and patterns only):
-    {context_text}
-
     USER RESUME TEXT:
     {resume_text}
 
@@ -52,7 +67,10 @@ def generate_interview_questions(resume_text):
     response = client.generate(user_prompt, system_prompt)
     if response:
         try:
-            return json.loads(response)
-        except:
-            return {"error": "Failed to parse JSON response from LLM"}
+            parsed = extract_json_object(response)
+            if parsed is not None:
+                return parsed
+            return {"error": f"Failed to parse JSON response from LLM: response was not valid JSON. Raw response: {response[:500]}"}
+        except Exception as e:
+            return {"error": f"Failed to parse JSON response from LLM: {e}. Raw response: {response[:500]}"}
     return {"error": "LLM generation failed"}
