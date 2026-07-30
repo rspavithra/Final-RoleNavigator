@@ -1,4 +1,5 @@
-const API_BASE = "http://localhost:5003";
+// Use VITE_API_URL environment variable for production, or local for development
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5003";
 
 /**
  * Safely parse a fetch Response as JSON.

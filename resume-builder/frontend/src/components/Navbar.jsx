@@ -73,7 +73,7 @@ export function Navbar() {
             <a href="#" onClick={(e) => e.preventDefault()}>Modules</a>
             <ul className={`rn-dropdown-menu${dropOpen ? " rn-open" : ""}`}>
               <li><a href={moduleUrl("http://localhost:5001/", userName)}>Resume Analyzer</a></li>
-              <li><a href={moduleUrl("http://localhost:5004/", userName)}>Resume Builder</a></li>
+              <li><a href={moduleUrl("http://localhost:5004/", userName)}>Resume Optimizer</a></li>
               <li><a href={moduleUrl("http://localhost:5002/", userName)}>Interview Q Prediction</a></li>
             </ul>
           </li>
@@ -96,9 +96,7 @@ export function Navbar() {
                   Signed in as {userName}
                 </li>
                 <div className="rn-p-divider" />
-                <li><a href="http://localhost:5000/#modules">📊&nbsp; My Dashboard</a></li>
-                <div className="rn-p-divider" />
-                <li className="rn-logout"><a href="#" onClick={handleLogout}>🚪&nbsp; Log Out</a></li>
+                <li className="rn-logout"><a href="#" onClick={handleLogout}>Log Out</a></li>
               </ul>
             </div>
           ) : (

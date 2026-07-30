@@ -44,32 +44,50 @@ export default function InterviewCoach() {
     }
   };
 
+  const onReset = () => {
+    setFile(null);
+    setResults(null);
+    setError("");
+    setLoading(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <div className="page">
-      <header className="hero">
-        <h1 className="heroTitle" style={{ color: "var(--blue)" }}>Generate Interview Questions</h1>
-        <p className="heroSub">
-          Upload your resume to get tailored interview questions based on your profile
-        </p>
-      </header>
+    <div className="app">
+      <button 
+        className="btn-new"
+        onClick={onReset}
+        title="Start fresh with a new interview"
+      >
+        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>+</span> New Interview
+      </button>
 
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".pdf"
-        hidden
-        onChange={onFileChange}
-      />
+      <main className="page">
+        <header className="hero">
+          <h1 className="heroTitle" style={{ color: "var(--blue)" }}>Interview Question Prediction </h1>
+          <p className="heroSub">
+            Upload your resume to get tailored interview questions based on your profile
+          </p>
+        </header>
 
-      <UploadCard
-        file={file}
-        onPickFile={onPickFile}
-        onGenerate={onGenerate}
-        loading={loading}
-        error={error}
-      />
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".pdf"
+          hidden
+          onChange={onFileChange}
+        />
 
-      <GeneratedQuestions results={results} file={file} />
+        <UploadCard
+          file={file}
+          onPickFile={onPickFile}
+          onGenerate={onGenerate}
+          loading={loading}
+          error={error}
+        />
+
+        <GeneratedQuestions results={results} file={file} />
+      </main>
     </div>
   );
 }

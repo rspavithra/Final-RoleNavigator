@@ -491,21 +491,30 @@ export function ResultsDashboard({ analysis, onNewAnalysis }: ResultsDashboardPr
                     These recommendations are tailored to the job description using AI analysis. Implement these to improve your match for this specific role.
                   </p>
                 </div>
-                {(analysis as any).jobMatchRecommendations.map((rec: any, index: number) => {
-                  const priorityColors = {
-                    high: "bg-red-50 border-red-200",
-                    medium: "bg-yellow-50 border-yellow-200",
-                    low: "bg-blue-50 border-blue-200"
-                  };
-                  const priorityBadgeColors = {
-                    high: "bg-red-100 text-red-800",
-                    medium: "bg-yellow-100 text-yellow-800",
-                    low: "bg-blue-100 text-blue-800"
-                  };
-                  const borderColor = priorityColors[rec.priority as keyof typeof priorityColors] || "border-indigo-200 bg-indigo-50";
-                  
-                  return (
-                    <div key={index} className={`border rounded-lg p-4 ${borderColor}`}>
+                {[
+                  ...((analysis as any).jobMatchRecommendations || [])
+                ]
+                  .sort((a: any, b: any) => {
+                    const order: Record<string, number> = { high: 0, medium: 1, low: 2 };
+                    const aPriority = String(a.priority || "medium").toLowerCase();
+                    const bPriority = String(b.priority || "medium").toLowerCase();
+                    return (order[aPriority] ?? 3) - (order[bPriority] ?? 3);
+                  })
+                  .map((rec: any, index: number) => {
+                    const priorityColors = {
+                      high: "bg-red-50 border-red-200",
+                      medium: "bg-yellow-50 border-yellow-200",
+                      low: "bg-green-50 border-green-200"
+                    };
+                    const priorityBadgeColors = {
+                      high: "bg-red-100 text-red-800",
+                      medium: "bg-yellow-100 text-yellow-800",
+                      low: "bg-green-100 text-green-800"
+                    };
+                    const borderColor = priorityColors[rec.priority as keyof typeof priorityColors] || "border-indigo-200 bg-indigo-50";
+                    
+                    return (
+                      <div key={index} className={`border rounded-lg p-4 ${borderColor}`}>
                       <div className="flex items-start space-x-3">
                         <div className="flex-shrink-0">
                           <span className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${priorityBadgeColors[rec.priority as keyof typeof priorityBadgeColors] || "bg-gray-100 text-gray-800"}`}>
@@ -589,19 +598,28 @@ export function ResultsDashboard({ analysis, onNewAnalysis }: ResultsDashboardPr
             </div>
             
             <div className="space-y-4">
-              {(analysis as any).jobMatchRecommendations.map((rec: any, index: number) => (
-                <div key={index} className="border border-indigo-300 rounded-lg p-4 bg-white">
-                  <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center mt-0.5">
-                      <span className="text-indigo-600 text-xs font-bold">★</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-medium text-gray-900">{rec.skill}</h4>
-                      <p className="text-sm text-gray-600 mt-1">{rec.suggestion}</p>
+              {[
+                ...((analysis as any).jobMatchRecommendations || [])
+              ]
+                .sort((a: any, b: any) => {
+                  const order: Record<string, number> = { high: 0, medium: 1, low: 2 };
+                  const aPriority = String(a.priority || "medium").toLowerCase();
+                  const bPriority = String(b.priority || "medium").toLowerCase();
+                  return (order[aPriority] ?? 3) - (order[bPriority] ?? 3);
+                })
+                .map((rec: any, index: number) => (
+                  <div key={index} className="border border-indigo-300 rounded-lg p-4 bg-white">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center mt-0.5">
+                        <span className="text-indigo-600 text-xs font-bold">★</span>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{rec.skill}</h4>
+                        <p className="text-sm text-gray-600 mt-1">{rec.suggestion}</p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </CardContent>
         </Card>

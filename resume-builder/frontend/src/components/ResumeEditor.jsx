@@ -30,7 +30,8 @@ export default function ResumeEditor({ data, onSave, onCancel, jobContext }) {
         if (!prompt) return;
         setAiLoading(path);
         try {
-            const res = await fetch("http://127.0.0.1:5000/api/ai-edit", {
+            const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:5005";
+            const res = await fetch(`${API}/api/ai-edit`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

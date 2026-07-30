@@ -12,7 +12,7 @@ if (process.env.NODE_ENV !== "production") {
   // Local development → explicitly load .env.local
   const envPath = path.resolve(__dirname, "../.env.local");
   console.log("📂 Loading .env from:", envPath);
-  dotenv.config({ path: envPath });
+  dotenv.config({ path: envPath, override: true });
 } else {
   // Production (Railway) → use injected env vars
   dotenv.config();

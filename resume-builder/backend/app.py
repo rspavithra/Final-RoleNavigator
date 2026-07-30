@@ -15,7 +15,7 @@ from groq import Groq
 app = Flask(__name__)
 CORS(app)
 
-print("✅ Running app from:", __file__)
+print("Running app from:", __file__)
 
 # ----------------------------
 # Config
@@ -475,7 +475,23 @@ def fill_latex_template(data: dict) -> str:
 def compile_latex_to_pdf_pdflatex(latex: str) -> str:
     os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-    if shutil.which("pdflatex") is None:
+    pdflatex_path = shutil.which("pdflatex")
+    if pdflatex_path is None:
+        # Try common MiKTeX install locations on Windows
+        possible_paths = [
+            os.path.expandvars(r"%LOCALAPPDATA%\Programs\MiKTeX\miktex\bin\x64\pdflatex.exe"),
+            os.path.expandvars(r"%LOCALAPPDATA%\Programs\MiKTeX\miktex\bin\pdflatex.exe"),
+            r"C:\Program Files\MiKTeX\miktex\bin\x64\pdflatex.exe",
+            r"C:\Program Files\MiKTeX\miktex\bin\pdflatex.exe",
+            r"C:\Program Files (x86)\MiKTeX\miktex\bin\x64\pdflatex.exe",
+            r"C:\Program Files (x86)\MiKTeX\miktex\bin\pdflatex.exe",
+        ]
+        for path in possible_paths:
+            if path and os.path.exists(path):
+                pdflatex_path = path
+                break
+
+    if not pdflatex_path:
         raise RuntimeError(
             "pdflatex not found. Install MiKTeX/TeX Live and ensure 'pdflatex' is in PATH."
         )
@@ -489,7 +505,7 @@ def compile_latex_to_pdf_pdflatex(latex: str) -> str:
     with open(tex_path, "w", encoding="utf-8") as f:
         f.write(latex)
 
-    cmd = ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", tex_filename]
+    cmd = [pdflatex_path, "-interaction=nonstopmode", "-halt-on-error", tex_filename]
 
     run1 = subprocess.run(cmd, cwd=workdir, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     if run1.returncode != 0:
@@ -597,11 +613,25 @@ Return ONLY JSON.
     )
 
     try:
+        import re
+        # Try to find JSON surrounded by ```json ... ```
+        match = re.search(r"```(?:json)?\s*(.*?)\s*```", content_clean, re.DOTALL | re.IGNORECASE)
+        if match:
+            extracted = match.group(1).strip()
+        else:
+            # Otherwise extract anything between first { and last }
+            start = content_clean.find("{")
+            end = content_clean.rfind("}")
+            if start != -1 and end != -1:
+                extracted = content_clean[start:end+1]
+            else:
+                extracted = content_clean
+
         print(f"--- [groq_generate_resume_json] Attempting JSON parse...")
-        return json.loads(content_clean)
+        return json.loads(extracted)
     except Exception as e:
         print(f"--- [groq_generate_resume_json] Standard JSON parse failed: {str(e)}")
-        # Fallback: extract JSON from larger text output
+        # Fallback handling
 
         start = content_clean.find("{")
         end = content_clean.rfind("}")
@@ -611,6 +641,12 @@ Return ONLY JSON.
             print("--- END ---")
             raise RuntimeError("Groq did not return JSON.")
         json_str = content_clean[start : end + 1]
+        
+        # Robustly escape invalid backslashes to prevent "Invalid \escape" errors
+        # This matches a backslash that is NOT followed by a valid JSON escape char
+        import re
+        json_str = re.sub(r'\\(?![/"\\bfnrtu])', r'\\\\', json_str)
+        
         try:
             return json.loads(json_str)
         except Exception as e:
@@ -635,6 +671,7 @@ def api_generate_pdf():
 
     data = request.get_json(silent=True) or {}
     resume_json = data.get("resumeData")
+    print(f"DEBUG /api/generate-pdf: Received resumeData? -> {bool(resume_json)}")
 
     if not resume_json:
         # Fallback to the one-shot extraction flow if no structured data provided

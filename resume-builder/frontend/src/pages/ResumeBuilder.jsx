@@ -6,7 +6,8 @@ import PdfPreview from "../components/PdfPreview";
 import ResumeEditor from "../components/ResumeEditor";
 
 
-const API = "http://127.0.0.1:5005";
+// Use relative path for production, local for development
+const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:5005";
 
 export default function ResumeBuilder() {
   // Upload
@@ -138,16 +139,33 @@ export default function ResumeBuilder() {
       setMatchPercent(percent);
       return percent;
     } catch (e) {
-      console.error("Match error:", e);
+      setExtractError("Match calculation failed.");
       return 0;
     } finally {
       setMatching(false);
     }
   }
 
-  async function generateResume({ force }) {
+  const resetAll = () => {
+    setFile(null);
+    setResumeText("");
+    setResumeData(null);
+    setPdfUrl("");
+    setMatchPercent(null);
+    setJobTitle("");
+    setJobDesc("");
     setExtractError("");
-    
+    setExtracting(false);
+    setGenerating(false);
+    setParsing(false);
+    setIsEditing(false);
+    setShowLowMatch(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  async function generateResume({ force, overrideData }) {
+    setExtractError("");
+
     // 1. Direct generation if forced
     if (force) {
       setGenerating(true);
@@ -155,7 +173,7 @@ export default function ResumeBuilder() {
         const res = await fetch(`${API}/api/generate-pdf`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ resumeText, jobText, resumeData: resumeData }),
+          body: JSON.stringify({ resumeText, jobText, resumeData: overrideData || resumeData }),
         });
 
 
@@ -171,7 +189,12 @@ export default function ResumeBuilder() {
           return;
         }
 
-        setPdfUrl(url);
+        // Add a timestamp cache-buster so the browser actually reloads the new PDF
+        const cacheBustedUrl = url.includes("?")
+          ? `${url}&t=${Date.now()}`
+          : `${url}?t=${Date.now()}`;
+
+        setPdfUrl(cacheBustedUrl);
       } catch (e) {
         setExtractError("Resume generation failed. Check backend is running.");
       } finally {
@@ -189,7 +212,7 @@ export default function ResumeBuilder() {
 
       if (percent > 70) {
         // High match: auto-generate
-        await generateResume({ force: true });
+        await generateResume({ force: true, overrideData: resumeData });
       } else {
         // Low/Moderate match: show modal to decision
         setShowLowMatch(true);
@@ -220,10 +243,18 @@ export default function ResumeBuilder() {
 
   return (
     <div className="app">
+      <button
+        className="btn-new"
+        onClick={resetAll}
+        title="Start fresh with a new resume"
+      >
+        <span style={{ fontSize: '20px', fontWeight: 'bold' }}>+</span> New Resume
+      </button>
+
       <main className="container">
         <div className="hero">
-          <h1>Career Catalyst</h1>
-          <p>Optimize your resume with AI. Align your skills with any job description in seconds.</p>
+          <h1>Resume Optimizer</h1>
+          <p>Create professional, job-specific resumes optimized for modern hiring systems.</p>
         </div>
 
         {/* Upload */}
@@ -297,7 +328,7 @@ export default function ResumeBuilder() {
             onSave={(newData) => {
               setResumeData(newData);
               setIsEditing(false);
-              generateResume({ force: true }); // Auto-generate PDF after edit
+              generateResume({ force: true, overrideData: newData }); // Auto-generate PDF after edit
             }}
             onCancel={() => setIsEditing(false)}
           />
@@ -315,13 +346,12 @@ export default function ResumeBuilder() {
           }}
           onGoAnalyzer={() => {
             setShowLowMatch(false);
-            const el = document.getElementById("resume-analyzer");
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            window.location.href = "http://localhost:5001/";
           }}
         />
       </main>
 
-      <footer className="footer">Career Catalyst (AI Resume Alignment) Ready</footer>
+      <footer className="footer">Resume Optimizer (AI Resume Alignment) Ready</footer>
     </div>
   );
 }
